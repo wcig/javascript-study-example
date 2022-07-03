@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>基础语法</title>
+</head>
+<body>
+<script>
+    // 1.语句
+    var a = 1 + 3;
+    var b = 'abc'
+
+    // 2.变量提升
+    console.log(a1); // undefined
+    var a1 = 1;
+
+    var a2;
+    console.log(a2); // undefined
+    a2 = 2;
+
+    // 3.标识符: 1)第一个字符可以是unicode字符,$,_; 2)第二个字符除了前面3个还可以是数字.
+    var b1 = 1;
+    var _1 = 1;
+    var $1 = 1;
+
+    // 4.注释
+    // 这是单行注释
+    /*
+     这是
+     多行
+     注释
+    */
+
+    // 5.区块: 区块对于var命令不构成单独的作用域
+    {
+        var c1 = 1;
+    }
+    console.log(c1) // 1
+
+    // 6.条件语句
+    // if
+    var d1 = 1;
+    if (d1 == 1) {
+        console.log("d1 = 1") // d1 = 1
+    }
+
+    // if else
+    var d2 = 2;
+    if (d2 == 0) {
+        console.log("d2 = 0")
+    } else if (d2 == 1) {
+        console.log("d2 = 1")
+    } else {
+        console.log("d2 != 0,1") // d2 != 0,1
+    }
+
+    // switch
+    var d3 = 3;
+    switch (d3) {
+        case 1:
+            console.log("d3 = 1");
+            break;
+        case 2:
+            console.log("d3 = 2");
+            break;
+        case 3:
+            console.log("d3 = 3"); // d3 = 3
+            break;
+        default:
+            console.log("d3 != 1,2");
+            break;
+    }
+
+    // 三元运算符
+    var e = 1;
+    var even = (e % 2 === 0) ? true : false;
+    console.log("e is even:", even) // e is even: false
+
+    // 7.循环语句
+    // while循环
+    var f = 1;
+    while (f <= 3) {
+        console.log(f);
+        f = f + 1;
+    }
+    // 1
+    // 2
+    // 3
+
+    // for循环
+    for (var g = 0; g < 3; g++) {
+        console.log(g);
+    }
+    // 0
+    // 1
+    // 2
+
+    // do while循环
+    var h = 0;
+    do {
+        console.log(h);
+        h++;
+    } while (h < 3)
+    // 0
+    // 1
+    // 2
+
+    // break
+    for (var i = 0; i < 5; i++) {
+        console.log(i);
+        if (i === 3) {
+            break;
+        }
+    }
+    // 0
+    // 1
+    // 2
+    // 3
+
+    // continue
+    for (var j = 0; j < 5; j++) {
+        if (j %2 === 0) {
+            continue;
+        }
+        console.log(j);
+    }
+    // 1
+    // 3
+
+    // label
+    top:
+        for (var m = 0; m < 3; m++){
+            for (var n = 0; n < 3; n++){
+                if (m === 1 && n === 1) break top;
+                console.log('m=' + m + ', n=' + n);
+            }
+        }
+    // m=0, n=0
+    // m=0, n=1
+    // m=0, n=2
+    // m=1, n=0
+</script>
+</body>
+</html>
