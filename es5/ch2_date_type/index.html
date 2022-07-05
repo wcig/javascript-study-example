@@ -6,7 +6,186 @@
 </head>
 <body>
 <script>
-  //
+  // 6种数据类型:
+  // 1.数值(number): 包括整数和小数
+  // 2.字符串(string)
+  // 3.布尔值(boolean)
+  // 4.undefined: 未定义
+  // 5.null: 空值
+  // 6.对象(object)
+
+  // 对象分为3个子类型:
+  // 1.狭义的对象(object)
+  // 2.数组(array)
+  // 3.函数(function)
+
+  // 1.确定值的数据类型
+  // typeof
+  console.log(typeof 123) // number
+  console.log(typeof '123') // string
+  console.log(typeof true) // boolean
+  console.log(typeof undefined) // undefined
+  function f1() {}
+  console.log(typeof f1) // function
+  console.log(typeof null) // object
+  console.log(typeof window) // object
+  console.log(typeof {}) // object
+  console.log(typeof []) // object
+  var a1 = {};
+  var a2 = [];
+  console.log(typeof a1) // object
+  console.log(typeof a2) // object
+
+  // instanceof
+  console.log(a1 instanceof Array) // false
+  console.log(a1 instanceof Object) // true
+  console.log(a2 instanceof Array) // true
+  console.log(a2 instanceof Object) // true
+
+  // 2.undefined,null区别: undefined表示未定义,null表示空值
+  var b2;
+  console.log(b2) // undefined
+
+  function f2(x) {return x}
+  console.log(f2()) // undefined
+
+  var b3 = new Object()
+  console.log(b3.p) // undefined
+
+  function f3() {}
+  console.log(f3()) // undefined
+
+  // 3.布尔值: 除false,undefined,null,0,NaN,空字符串,其他值都是true
+
+  // 4.数值
+  // js内部所有数字都是以64位浮点数形式存储
+  console.log(1 === 1.0) // true
+
+  // 数值精度: js浮点数64位二进制: 1位符号位 + 2~12(共11位)指数部分 + 13~64(共52位)小数部分
+  console.log(Math.pow(2, 53)) // 9007199254740992
+  console.log(Math.pow(2, 53) + 1) // 9007199254740992
+  console.log(Math.pow(2, 53) + 2) // 9007199254740994
+  console.log(Math.pow(2, 53) + 3) // 9007199254740996
+  console.log(Math.pow(2, 53) + 4) // 9007199254740996
+
+  // 数值范围
+  console.log(Number.MAX_VALUE) // 1.7976931348623157e+308
+  console.log(Number.MIN_VALUE) // 5e-324
+  console.log(Math.pow(2, 1023)) // 8.98846567431158e+307
+  console.log(Math.pow(2, 1024)) // Infinity
+  console.log(Math.pow(2, -1074)) // 5e-324
+  console.log(Math.pow(2, -1075)) // 0
+
+  // 进制
+  console.log(0b111) // 7
+  console.log(0o377) // 255
+  console.log(123) // 123
+  console.log(0xff) // 255
+
+  // 正零和负零
+  console.log(+0 === -0) // true
+  console.log(+0 === 0) // true
+  console.log(-0 === 0) // true
+  console.log(1/+0) // Infinity
+  console.log(1/-0) // -Infinity
+  console.log(1/0) // Infinity
+
+  // NaN: 表示非数字
+  console.log(1 - 'a') // NaN
+
+  // Infinity: 无穷
+  console.log(Math.pow(2, 1024)) // Infinity
+
+  // 5.转换+判断
+  // parseInt: 字符串转整数
+  console.log(parseInt('123')) // 123
+  console.log(parseInt(' 123')) // 123
+  console.log(parseInt('1000', 2)) // 8
+  console.log(parseInt('1000', 8)) // 512
+  console.log(parseInt('1000', 10)) // 1000
+  console.log(parseInt('1000', 16)) // 4096
+
+  // parseFloat: 字符串转浮点数
+  console.log(parseFloat('3.14')) // 3.14
+  console.log(parseFloat('314e-2')) // 3.14
+  console.log(parseFloat('0.0314e+2')) // 3.14
+
+  // isNaN: 判断是否NaN
+  console.log(isNaN(123)) // false
+  console.log(isNaN(NaN)) // true
+
+  // isFinite: 判断是否正常数值
+  console.log(isFinite(Infinity)) // false
+  console.log(isFinite(-Infinity)) // false
+  console.log(isFinite(NaN)) // false
+  console.log(isFinite(undefined)) // false
+  console.log(isFinite(null)) // true
+  console.log(isFinite(-1)) // true
+
+  // 6.字符串
+  // 定义
+  var c1 = "abc"
+  var c2 = 'edf'
+  console.log(c1) // abc
+  console.log(c2) // edf
+
+  // 转义
+  var c3 = 'say \'hello\''
+  var c4 = "say 'hello'"
+  var c5 = 'say "hello"'
+  var c6 = "say \"hello\""
+  var c7 = `say 'hello'`
+  var c8 = `say "hello"`
+
+  // 多行
+  var c9 = 'long \
+string'
+  var c10 = 'long '
+    + 'string'
+  console.log(c9) // long string
+  console.log(c10) // long string
+
+  // 转义
+  //  \0 ：null（\u0000）
+  //  \b ：后退键（\u0008）
+  //  \f ：换页符（\u000C）
+  //  \n ：换行符（\u000A）
+  //  \r ：回车键（\u000D）
+  //  \t ：制表符（\u0009）
+  //  \v ：垂直制表符（\u000B）
+  //  \' ：单引号（\u0027）
+  //  \" ：双引号（\u0022）
+  //  \\ ：反斜杠（\u005C
+
+  // 字符串与数组 (字符串可视为字符数组)
+  var d1 = 'hello'
+  console.log(d1[0], d1[1], d1[2]) // h e l
+  var d2 = '你好北京'
+  console.log(d2[0], d2[1], d2[2]) // 你 好 北
+
+  // length长度
+  console.log(d1.length) // 5
+  console.log(d2.length) // 4
+  console.log(''.length) // 0
+
+  // base64
+  // btoa: base64编码, atob: base解码 (不适用非ASCII码)
+  var e1 = 'hello tom'
+  var e2 = btoa(e1)
+  var e3 = atob(e2)
+  console.log(e1) // hello tom
+  console.log(e2) // aGVsbG8gdG9t
+  console.log(e3) // hello tom
+  // 非ASCII码需先做编码再做base64编码
+  //console.log(btoa('你好')) // 错误
+  function b64Encode(str) {
+      return btoa(encodeURIComponent(str));
+  }
+  function b64Decode(str) {
+      return decodeURIComponent(atob(str));
+  }
+  console.log(b64Encode('你好'))
+  console.log(b64Decode('JUU0JUJEJUEwJUU1JUE1JUJE'))
 </script>
 </body>
 </html>

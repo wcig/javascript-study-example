@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据类型: 对象</title>
+</head>
+<body>
+<script>
+    // 1.定义
+    var o1 = {
+        'id': 100,
+        'name': 'tom',
+    }
+    console.log(o1) // {id: 100, name: 'tom'}
+    console.log(o1.id) // 100
+    console.log(o1.name) // tom
+
+    // 2.对象引用 (多个对象变量指向同一个对象会相互影响,值类型则不会)
+    var o2 = {}
+    var o3 = o2
+    o3.a = 1
+    console.log(o2.a) // 1
+    o2.b = 2
+    console.log(o3.b) // 2
+    var x = 1
+    var y = x
+    x = 2
+    console.log(x, y) // 2, 1
+
+    // 3.行首是大括号默认解释为代码块
+
+    // 4.属性操作
+    // 读取
+    var o4 = {
+        'id': 100,
+        'name': 'tom',
+    }
+    console.log(o4.id) // 100
+    console.log(o4['id']) // 100
+
+    // 赋值
+    var o5 = {}
+    o5.name = 'jerry'
+    console.log(o5.name) // jerry
+    o5['name'] = 'luck'
+    console.log(o5.name) // luck
+
+    // 查看
+    var o6 = {
+        k1: 1,
+        k2: 2,
+    }
+    console.log(Object.keys(o6)) // ['k1', 'k2']
+
+    // 删除
+    var o7 = {p:123}
+    console.log(Object.keys(o7)) // ['p']
+    console.log(delete o7.p) // true
+    console.log(Object.keys(o7)) // []
+    console.log(delete o7.q) // true
+
+    // 是否存在
+    var o8 = {p:111}
+    console.log('p' in o8) // true
+    console.log('q' in o8) // false
+    console.log('toString' in o8) // true
+
+    // 遍历
+    var o9 = {a: 1, b: 2, c: 3};
+    for (var k in o9) {
+        console.log('key:', k)
+        console.log('val:', o9[k])
+    }
+    // key: a
+    // val: 1
+    // key: b
+    // val: 2
+    // key: c
+    // val: 3
+
+    // 5.with语句
+    var o10 = {
+        p1: 1,
+        p2: 2,
+    };
+    console.log(o10) // {p1: 1, p2: 2}
+    with (o10) {
+        p1 = 4;
+        p2 = 5;
+    }
+    console.log(o10) // {p1: 4, p2: 5}
+    // 等同于
+    o10.p1 = 14;
+    o10.p2 = 15;
+    console.log(o10) // {p1: 14, p2: 15}
+</script>
+</body>
+</html>
