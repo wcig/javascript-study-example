@@ -6,7 +6,117 @@
 </head>
 <body>
 <script>
-  //
+  // 1.函数声明
+  // 方式一: function
+  function f1(s) {
+      console.log(s)
+  }
+  // 方式二: 函数表达式
+  var f2 = function (s) {
+      console.log(s)
+  }
+  // 方式三: Function
+  var f3 = new Function(
+      'x',
+      'y',
+      'return x + y'
+  )
+  // 等价于
+  function f4(x, y) {
+      return x + y
+  }
+
+  // 2.函数与其他值一样, 都可以作为函数参数传递
+
+  // 3.函数属性和方法
+  // 3.1 name属性: 返回函数名称
+  function f5() {}
+  console.log(f5.name) // f5
+
+  var f6 = function () {}
+  console.log(f6.name) // f6
+
+  var f7 = function myName() {}
+  console.log(f7.name) // myName
+
+  // 3.2 length属性: 返回函数预期传入参数个数
+  function f8(x, y) {}
+  console.log(f8.length) // 2
+
+  // 3.3 toString(): 返回函数源码字符串
+  function f9(x, y) {
+      // x + y
+      console.log(x + y)
+  }
+  console.log(f9.toString())
+  // function f9(x, y) {
+  // x + y
+  // console.log(x + y)
+  // }
+
+  // 4.函数作用域 (建议不要在函数块内部定义与外部一样名称的变量, 否则将导致函数内变量提升)
+
+  // 5.arguments对象
+  var f10 = function (one) {
+      console.log(arguments[0])
+      console.log(arguments[1])
+      console.log(arguments[2])
+  }
+  f10(1,2,3)
+  // 1
+  // 2
+  // 3
+
+  // 6.闭包 (1.读取外层函数内部变量; 2.让变量始终在内存中; 3.封装对象的私有属性和私有方法)
+  function f11() {
+      var n = 123;
+      function f12() {
+          console.log(n)
+      }
+      return f12
+  }
+  var result = f11()
+  result() // 123
+
+  function f13(start) {
+      return function () {
+          return start++
+      }
+  }
+  var inc = f13(5)
+  console.log(inc()) // 5
+  console.log(inc()) // 6
+  console.log(inc()) // 7
+
+  function Person(name) {
+      var _age;
+      function setAge(n) {
+          _age = n;
+      }
+      function getAge() {
+          return _age;
+      }
+      return {
+          name: name,
+          getAge: getAge,
+          setAge: setAge
+      };
+  }
+  var p1 = Person('张三');
+  p1.setAge(25);
+  console.log(p1.getAge()); // 25
+
+  // 7.函数立即调用: function() {/*code*/}()
+  (function f14() {
+      console.log('f14')
+  }()); // f14
+
+  var num = function () {return 15}();
+  console.log(num) // 15
+
+  // 8.eval: 接手字符串作为参数并执行
+  eval('var a = 456;')
+  console.log(a) // 456
 </script>
 </body>
 </html>
