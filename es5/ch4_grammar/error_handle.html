@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>错误处理</title>
+</head>
+<body>
+<script>
+    var log = console.log.bind(console)
+
+    // 1.Error对象
+    var err1 = new Error('出错了');
+    log(err1)
+    // Error: 出错了
+    //     at error_handle.html?_ijt=k6tjpfip48tjkd7q1a9bhsoekd&_ij_reload=RELOAD_ON_SAVE:12:16
+    log(err1.name)
+    // Error
+    log(err1.message)
+    // 出错了
+    log(err1.stack)
+    // Error: 出错了
+    //     at error_handle.html?_ijt=k6tjpfip48tjkd7q1a9bhsoekd&_ij_reload=RELOAD_ON_SAVE:12:16
+    log(err1.cause) // undefined
+
+    // 2.原生错误类型
+    // 2.1 SyntaxError: 代码语法错误
+    // 2.2 ReferenceError: 引用不存在变量错误
+    // 2.3 RangeError: 值超出有效范围错误
+    // 2.4 TyeError: 对象是变量或参数不是预期类型错误
+    // 2.5 URIError: URI相关错误
+    // 2.6 EvalError: eval函数执行错误
+
+    // 3.自定义错误
+    function UserError(message) {
+        this.message = message || '默认信息';
+        this.name = 'UserError';
+    }
+    UserError.prototype = new Error();
+    UserError.prototype.constructor = UserError;
+    var err2 = new UserError('这是自定义错误');
+    log(err2) // UserError {message: '这是自定义错误', name: 'UserError'}
+
+    // 4.throw语句 (中断程序抛出一个错误)
+    // var x = 0;
+    // if (x <= 0) {
+    //     throw new Error('x必须为整数');
+    // }
+    // var id = 0;
+    // if (id <= 0) {
+    //     throw new UserError('用户ID错误')
+    // }
+
+    // 5.try...catch
+    try {
+        throw new Error('出错了!');
+    } catch (e) {
+        log(e.name + ": " + e.message);
+        // Error: 出错了!
+        log(e.stack);
+        // Error: 出错了!
+        //     at error_handle.html?_ijt=k6tjpfip48tjkd7q1a9bhsoekd&_ij_reload=RELOAD_ON_SAVE:60:15
+    }
+
+    // 6.finally
+    try {
+        throw new Error('出错了!');
+        log('111');
+    } catch (e) {
+        log('222');
+    } finally {
+        log('333');
+    }
+    // 222
+    // 333
+</script>
+</body>
+</html>
