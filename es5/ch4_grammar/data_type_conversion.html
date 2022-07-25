@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据类型转换</title>
+</head>
+<body>
+<script>
+    var log = console.log.bind(console)
+
+    // 示例
+    log('4' - '3') // 1
+
+    // 2.强制转换
+    // 2.1 Number()
+    log('----- Number() -----')
+    log(Number(123)) // 123
+    log(Number('123')) // 123
+    log(Number('123abc')) // NaN
+    log(Number('')) // 0
+    log(Number(true)) // 1
+    log(Number(false)) // 0
+    log(Number(undefined)) // NaN
+    log(Number(null)) // 0
+    log(Number('\t\r\n1.23\n')) // 1.23
+    log(Number({a: 1})) // NaN
+    log(Number([123, 11])) // NaN
+    log(Number([123])) // 123
+
+    // 2.2 parseInt(): 规则比Number()宽松
+    log('----- parseInt() -----')
+    log(parseInt('123abc')) // 123
+    log(parseInt('\t\r\n1.23\n')) // 1
+
+    // 2.3 String()
+    log('----- String() -----')
+    log(String(123)) // "123"
+    log(String('abc')) // "abc"
+    log(String(true)) // "true"
+    log(String(false)) // "false"
+    log(String(undefined)) // "undefined"
+    log(String(null)) // "null"
+    log(String({a: 1})) // "[object Object]"
+    log(String([1, 2, 3])) // "1,2,3"
+    log(String([123])) // "123"
+
+    // 2.4 Boolean()
+    log('----- Boolean() -----')
+    log(Boolean(123)) // true
+    log(Boolean(0)) // false
+    log(Boolean('abc')) // true
+    log(Boolean('')) // false
+    log(Boolean(true)) // true
+    log(Boolean(false)) // false
+    log(Boolean(undefined)) // false
+    log(Boolean(null)) // false
+    log(Boolean(NaN)) // false
+    log(Boolean({a: 1})) // true
+    log(Boolean({})) // true
+    log(Boolean([1])) // true
+    log(Boolean([])) // true
+
+    // 3.自动转换
+    // 3.1 自动转换为布尔值
+    log('----- auto boolean -----')
+    // 作为判断语句时: undefined,null,+0或-0,NaN,''5个值作为false, 其余全为true
+    // !! expression
+    // expression ? true : false
+
+    // 3.2 自动转换为字符串
+    log('----- auto string -----')
+    log('5' + 1) // "51"
+    log('5' + '1') // "51"
+    log('5' + true) // "5true"
+    log('5' + false) // "5false"
+    log('5' + undefined) // "5undefined"
+    log('5' + null) // "5null"
+    log('5' + NaN) // "5NaN"
+    log('5' + {a: 1}) // "5[object Object]"
+    log('5' + {}) // "5[object Object]"
+    log('5' + [1]) // "51"
+    log('5' + []) // "5"
+    log('5' + function (){}) // "5function (){}"
+
+    // 3.3 自动转换为数值
+    log('----- auto number -----')
+    log('5' - '2') // 3
+    log('5' * 2) // 10
+    log('abc' -  1) // NaN
+    log(true - 1) // 0
+    log(false - 1) // -1
+    log(undefined - 1) // NaN
+    log(null - 1) // -1
+    log(NaN - 1) // NaN
+</script>
+</body>
+</html>
