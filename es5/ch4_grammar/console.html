@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>console</title>
+</head>
+<body>
+<script>
+    // 1.console对象:
+    // 类似标准输出, 用于调试程序和提供命令行接口.
+
+    // 2.console对象静态方法
+    // 2.1 console.log(), console.info(), console.debug()
+    console.log('hello world') // hello world
+    console.info('hello world') // hello world
+    console.debug('hello world') // hello world
+    console.log('%s', 'abc') // abc
+    console.log('%d', 123) // 123
+    console.log('%i', 123) // 123
+    console.log('%f', 1.23) // 1.23
+
+    // 2.2 console.warn(), console.error(),
+    console.warn('warn msg') // warn msg
+    console.error('error msg') // error msg
+
+    // 2.3 console.table()
+    var languages = [
+        { name: "JavaScript", fileExtension: ".js" },
+        { name: "TypeScript", fileExtension: ".ts" },
+        { name: "CoffeeScript", fileExtension: ".coffee" }
+    ];
+    console.table(languages);
+
+    // 2.4 console.count() (统计被调用次数)
+    function greet(user) {
+        console.count();
+        console.count(user);
+        return 'hi ' + user;
+    }
+    greet('bob')
+    // default: 1
+    // bob: 1
+    greet('alice')
+    // default: 2
+    // alice: 2
+    greet('bob')
+    // default: 3
+    // bob: 3
+
+    // 2.5 console.dir(), console.dirxml()
+    // dir: 对对象进行检查并以易于阅读格式打印
+    // dirxml: 以目录树的形式显示 DOM 节点
+
+    // 2.6 console.assert() (程序运行中条件判断, 不满足显示错误并继续执行)
+    console.assert(false, '判断条件不成立') // 声明失败：判断条件不成立
+    console.log('abc') // abc
+
+    // 2.7 console.time(), console.timeEnd() (计算耗时)
+    console.time('Array initialize');
+    var array= new Array(1000000);
+    for (var i = array.length - 1; i >= 0; i--) {
+        array[i] = new Object();
+    }
+    console.timeEnd('Array initialize'); // Array initialize: 43.77099609375 ms
+
+    // 2.8 console.group(), console.groupEnd(), console.groupCollapsed() (显示信息分组)
+
+    // 2.9 console.trace(),console.clear()
+    // trace: 打印当前执行代码在堆栈的调用路径
+    console.trace()
+    // clear: 清空控制台所有输出
+    console.clear()
+
+    // 3.控制台命令行...
+
+    // 4.debugger语句 (运行到debugger语句自动调试暂停)
+    for(var j = 0; j < 5; j++){
+        console.log(j);
+        if (j === 2) debugger;
+    }
+</script>
+</body>
+</html>
