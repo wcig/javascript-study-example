@@ -145,7 +145,119 @@
     // Object.defineProperty(o12, 'p', {configurable: true}) // TypeError: Cannot redefine property: p
     // Object.defineProperty(o12, 'p', {value: 2}) // TypeError: Cannot redefine property: p
 
-    // 7.存取值 TODO
+    // 7.存取值
+    // 7.1 写法一: configurable,enumerable默认为false, 实际使用少.
+    var o13 = Object.defineProperty({}, 'p', {
+        get: function () {
+            return 'getter';
+        },
+        set: function (value) {
+            log('setter:', value);
+        }
+    });
+    log(o13.p); // getter
+    o13.p = 123; // setter: 123
+
+    // 7.2 写法二: configurable,enumerable默认为true, 实际常用.
+    var o14 = {
+        get p() {
+            return 'getter';
+        },
+        set p(value) {
+            log('setter:', value);
+        }
+    };
+    log(o14.p); // getter
+    o14.p = 456; // setter: 456
+
+    // 8.对象的拷贝
+    // 8.1 普通方法: 遇到存取器定义的属性只会拷贝值.
+    var extend1 = function (to, from) {
+        for (var property in from) {
+            to[property] = from[property];
+        }
+
+        return to;
+    }
+    var e1 = extend1({}, {a: 123});
+    log(e1); // {a: 123}
+    var e2 = extend1({}, {
+        get a() {
+            return 456;
+        }
+    });
+    log(e2); // {a: 456}
+
+    // 8.2 Object.defineProperty 拷贝属性.
+    var extend2 = function (to, from) {
+        for (var property in from) {
+            if (!from.hasOwnProperty(property)) continue;
+            Object.defineProperty(
+                to,
+                property,
+                Object.getOwnPropertyDescriptor(from, property)
+            );
+        }
+        return to;
+    }
+    var e3 = extend2({}, {
+        get a(){
+            return 123;
+        }
+    });
+    log(e3); // { get a(){ return 1 } })
+
+    // 9.控制对象状态
+    // 9.1 Object.preventExtensions(): 使对象无法再添加新的属性, 但可以删除旧的属性.
+    var o15 = {q: 'tom'};
+    Object.preventExtensions(o15);
+    o15.p = 123;
+    log(o15.p); // undefined
+    log(o15); // {q: 'tome'}
+    delete o15.q;
+    log(o15); // {}
+    // Object.defineProperty(o15, 'p', {
+    //     value: 456
+    // });
+    // TypeError: Cannot define property:p, object is not extensible.
+
+    // 9.2 Object.isExtensible(): 教程一个对象是否未使用了Object.preventExtensions()方法, 即可以为对象添加属性.
+    var o16 = new Object();
+    log(Object.isExtensible(o16)); // true
+    Object.preventExtensions(o16);
+    log(Object.isExtensible(o16)); // false
+
+    // 9.3 Object.seal(): 使对象即无法增加新的属性, 也无法删除旧的属性. (实质是将属性描述对象的configurable属性设为false)
+    var o17 = {p: 123};
+    Object.seal(o17);
+    o17.q = 'tom';
+    log(o17); // {p: 123}
+    delete o17.p;
+    log(o17); // {p: 123}
+    o17.p = 456;
+    log(o17); // {p: 456}
+
+    // 9.4 Object.isSealed(): 检查对象是否使用了Object.seal()方法
+    var o18 = {};
+    log(Object.isSealed(o18)); // false
+    Object.seal(o18);
+    log(Object.isSealed(o18)); // true
+
+    // 9.5 Object.freeze(): 使对象无法添加新的属性, 无法删除旧的属性, 也无法改变属性的值.
+    var o19 = {p: 123};
+    Object.freeze(o19);
+    o19.q = 'tom';
+    log(o19); // {p: 123}
+    delete o19.p;
+    log(o19); // {p: 123}
+    o19.p = 456;
+    log(o19); // {p: 123}
+
+    // 9.6 Object.isFrozen(): 检查对象是否使用了Object.freeze()方法
+    var o20= {};
+    log(Object.isFrozen(o20)); // false
+    Object.freeze(o20);
+    log(Object.isFrozen(o20)); // true
 </script>
 </body>
 </html>
