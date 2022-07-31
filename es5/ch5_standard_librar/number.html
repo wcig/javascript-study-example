@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Number对象</title>
+</head>
+<body>
+<script>
+    var log = console.log.bind(console);
+
+    // 1.概述
+    // 1.1 作为构造函数时, 生成值为数值的对象
+    var n1 = new Number(123);
+    log(typeof  n1); // object
+
+    // 1.2 作为工具函数时, 将任何类型的值转为数值
+    var n2 = Number(123);
+    log(typeof n2); // number
+
+    // 2.静态属性
+    log(Number.NaN) // NaN (非数值)
+    log(Number.POSITIVE_INFINITY) //  Infinity (正无穷)
+    log(Number.NEGATIVE_INFINITY) // -Infinity (负无穷)
+
+    log(Number.MIN_VALUE) // 5e-324 (最小的正数)
+    log(Number.MIN_VALUE > 0) // true
+
+    log(Number.MAX_VALUE) // 1.7976931348623157e+308 (可以表示的最大数)
+    log(Number.MAX_VALUE < Infinity) // true
+
+    log(Number.MIN_SAFE_INTEGER) // -9007199254740991 (能精确表示的最小整数)
+    log(Number.MAX_SAFE_INTEGER) //  9007199254740991 (能精确表示的最大整数)
+
+    // 3.实例方法
+    // 3.1 Number.prototype.toString(): 将数值转换为字符串, 支持不同进制.
+    var n3 = 10;
+    log(n3.toString()); // 10
+    log(n3.toString(2)); // 1010
+    log(n3.toString(8)); // 12
+    log(n3.toString(16)); // a
+    log((10).toString()); // 10
+
+    // 3.2 Number.prototype.toFixed(): 将数转换为指定位数的小数, 然后返回该小数的字符串, 参数为小数点后有效数字. (小数的四舍五入是不确定的, 谨慎使用)
+    log((10).toFixed(2)); // "10.00"
+    log(10.005.toFixed(2)); // "10.01"
+    log(10.055.toFixed(2)); // "10.05"
+
+    // 3.3 Number.prototype.toExponential(): 转换为科学计数法字符串, 参数为小数点后有效数字.
+    log((10).toExponential()); // "1e+1"
+    log((10).toExponential(2)); // "1.00e+1"
+
+    // 3.4 Number.prototype.toPrecision(): 转换为指定位数的有效数字. (四舍五入是不确定的, 谨慎使用)
+    log(1.234.toPrecision()); // "1.234"
+    log(1.234.toPrecision(1)); // "1"
+    log(1.234.toPrecision(2)); // "1.2"
+    log(1.234.toPrecision(3)); // "1.23"
+    log(1.234.toPrecision(4)); // "1.234"
+
+    // 3.5 Number.prototype.toLocaleString(): 接受一个地区码作为参数, 返回一个字符串表示当前数字在该地区的当地书写形式.
+    log((123).toLocaleString('zh-Hans-CN', { style: 'currency', currency: 'CNY' })); // "￥123.00"
+    log((123).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })); // "123,00 €"
+    log((123).toLocaleString('en-US', { style: 'currency', currency: 'USD' })); // "$123.00"
+
+    // 4.自定义方法
+    Number.prototype.add = function (x) {
+        return this + x;
+    };
+    log(8['add'](2)) // 10
+
+    Number.prototype.subtract = function (x) {
+        return this - x;
+    };
+    log((8).add(2).subtract(4)); // 6
+
+    Number.prototype.iterate = function () {
+        var result = [];
+        for (var i = 0; i <= this; i++) {
+            result.push(i);
+        }
+        return result;
+    };
+    log((8).iterate()); // [0, 1, 2, 3, 4, 5, 6, 7, 8]
+</script>
+</body>
+</html>
