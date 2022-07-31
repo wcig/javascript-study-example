@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>实例对象与new命令</title>
+</head>
+<body>
+<script>
+    var log = console.log.bind(console);
+
+    // 1.构造函数: 生成对象实例的函数, 通常名字首字母大写.
+    // 1) 函数内部使用 this 关键字代表生成对象的实例.
+    // 2) 生成对象时需使用 new 命令.
+
+    // 2.new 命令
+    // 2.1 基本用法
+    var Vehicle1 = function () {
+        this.price = 1000;
+    };
+    var v1 = new Vehicle1();
+    log(v1.price); // 1000
+
+    var Vehicle2 = function (p) {
+        this.price = p;
+    };
+    var v2 = new Vehicle2(2000);
+    log(v2.price); // 2000
+
+    // 忘记使用 new 关键字, 构造函数变为普通函数, 不会生成实例对象, 会导致一些异常的问题.
+    var Vehicle3 = function () {
+        this.price = 3000;
+    };
+    var v3 = Vehicle3();
+    log(v3); // undefined
+    log(price); // 3000
+
+    // 2.2 new 命令原理
+    // 1) 创建一个空对象，作为将要返回的对象实例。
+    // 2) 将这个空对象的原型，指向构造函数的prototype属性。
+    // 3) 将这个空对象赋值给函数内部的this关键字。
+    // 4) 开始执行构造函数内部的代码。
+
+    // 2.3 new.target: 如果当前函数是 new 命令调用, 则指向当前函数, 否则为undefined.
+    function f() {
+        console.log(new.target === f);
+    }
+    f() // false
+    new f() // true
+
+    // 3.Object.create(): 基于已有对象模板生成新的对象, 继承其属性和方法.
+    var person1 = {
+        name: '张三',
+        age: 38,
+        greeting: function() {
+            console.log('Hi! I\'m ' + this.name + '.');
+        }
+    };
+    var person2 = Object.create(person1);
+    log(person2.name); // 张三
+    person2.greeting(); // Hi! I'm 张三.
+</script>
+</body>
+</html>
