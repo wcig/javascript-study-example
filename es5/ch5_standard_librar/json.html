@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JSON对象</title>
+</head>
+<body>
+<script>
+    var log = console.log.bind(console);
+
+    // 1.JSON格式规定
+    // 1) 复合类型的值只能是数组或对象，不能是函数、正则表达式对象、日期对象。
+    // 2) 原始类型的值只有四种：字符串、数值（必须以十进制表示）、布尔值和null（不能使用NaN, Infinity, -Infinity和undefined）。
+    // 3) 字符串必须使用双引号表示，不能使用单引号。
+    // 4) 对象的键名必须放在双引号里面。
+    // 5) 数组或对象最后一个成员的后面，不能加逗号。
+
+    // 2.JSON对象
+    // JSON对象是 JavaScript 的原生对象，用来处理 JSON 格式数据。它有两个静态方法：JSON.stringify()和JSON.parse()
+
+    // 3.JSON.stringify(): 值 -> JSON字符串
+    // 3.1 基本用法
+    log(JSON.stringify('abc')) // "abc"
+    log(JSON.stringify(1)) // 1
+    log(JSON.stringify(false)) // false
+    log(JSON.stringify([])) // []
+    log(JSON.stringify({})) // {}
+    log(JSON.stringify([1, "false", false])) // [1,"false",false]
+    log(JSON.stringify({ name: "张三" })) // {"name":"张三"}
+
+    // 注意, 字符串转换会默认加上双引号
+    log(JSON.stringify('abc') === 'abc'); // false
+    log(JSON.stringify('abc') === '"abc"'); // true
+
+    // 3.2 接受第二个参数: 指定对象的哪些属性需要转换为字符串.
+    var obj = {
+        'prop1': 'value1',
+        'prop2': 'value2',
+        'prop3': 'value3'
+    };
+    var selectedProperties = ['prop1', 'prop2'];
+    log(JSON.stringify(obj, selectedProperties)); // {"prop1":"value1","prop2":"value2"}
+
+    // 3.3 第三个参数: 增加JSON字符串的可读性.
+    log(JSON.stringify({ p1: 1, p2: 2 })); // {"p1":1,"p2":2}
+    log(JSON.stringify({ p1: 1, p2: 2 }, null, 2));
+    // {
+    //     "p1": 1,
+    //     "p2": 2
+    // }
+    log(JSON.stringify({ p1: 1, p2: 2 }, null, '\t'));
+    // {
+    //     "p1": 1,
+    //     "p2": 2
+    // }
+
+    // 3.4 toJSON(): 如果参数对象有自定义的toJSON()方法, 将直接调用该方法而不会使用JSON.stringify()方法.
+    var user = {
+        firstName: '三',
+        lastName: '张',
+        get fullName(){
+            return this.lastName + this.firstName;
+        }
+    };
+    log(JSON.stringify(user)); // {"firstName":"三","lastName":"张","fullName":"张三"}
+    user.toJSON = function () {
+        return {
+            name: this.lastName + this.firstName
+        };
+    };
+    log(JSON.stringify(user)); // {"name":"张三"}
+
+    // 4.JSON.parse(): JSON字符串 -> 值
+    log(JSON.parse('{}')); // {}
+    log(JSON.parse('true')); // true
+    log(JSON.parse('"foo"')); // "foo"
+    log(JSON.parse('[1, 5, "false"]')); // [1, 5, "false"]
+    log(JSON.parse('null')); // null
+    var o = JSON.parse('{"name": "张三"}');
+    log(o.name); // 张三
+
+    // 解析失败将抛出错误
+    try {
+        JSON.parse("'String'");
+    } catch(e) {
+        console.log('parsing error');
+    } // parsing error
+</script>
+</body>
+</html>
