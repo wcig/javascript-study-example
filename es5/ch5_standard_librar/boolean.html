@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Boolean对象</title>
+</head>
+<body>
+<script>
+    var log = console.log.bind(console);
+
+    // 1.Boolean对象
+    var b1 = new Boolean(true);
+    log(typeof b1); // object
+    log(b1 === true); // false
+    log(b1.valueOf() === true); // true
+
+    var b2 = Boolean(true);
+    log(typeof b2); // boolean
+    log(b2 === true); // true
+    log(b2.valueOf() === true); // true
+
+    // 2.Boolean()函数类型转换
+    log(Boolean(undefined)) // false
+    log(Boolean(null)) // false
+    log(Boolean(0)) // false
+    log(Boolean('')) // false
+    log(Boolean(NaN)) // false
+
+    log(Boolean(1)) // true
+    log(Boolean('false')) // true
+    log(Boolean([])) // true
+    log(Boolean({})) // true
+    log(Boolean(function () {})) // true
+    log(Boolean(/foo/)) // true
+
+    // 双重否定运算符(!)可以将任意值转化为对应的布尔值
+    log(!!undefined) // false
+    log(!!null) // false
+    log(!!0) // false
+    log(!!'') // false
+    log(!!NaN) // false
+
+    log(!!1) // true
+    log(!!'false') // true
+    log(!![]) // true
+    log(!!{}) // true
+    log(!!function(){}) // true
+    log(!!/foo/) // true
+
+    // 注意特殊值
+    if (Boolean(false)) {
+        console.log('true');
+    } // 无输出
+    if (new Boolean(false)) {
+        console.log('true');
+    } // true
+    if (Boolean(null)) {
+        console.log('true');
+    } // 无输出
+    if (new Boolean(null)) {
+        console.log('true');
+    } // true
+</script>
+</body>
+</html>
