@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>String对象</title>
+</head>
+<body>
+<script>
+    var log = console.log.bind(console);
+
+    // 1.概述
+    // 1.1 作为构造函数时, 生成字符串对象
+    var s1 = new String('abc');
+    log(typeof s1); // object
+
+    // 1.2 作为工具函数时, 将任意类型值转换为字符串
+    var s2 = String('abc');
+    log(typeof s2); // string
+
+    // 2.静态方法
+    // 2.1 String.fromCharCode(): 传入参数是一个或多个数值代表 Unicode 码点, 返回值是这些码点组成的字符串.
+    log(String.fromCharCode()) // ""
+    log(String.fromCharCode(97)) // "a"
+    log(String.fromCharCode(104, 101, 108, 108, 111)) // "hello"
+
+    // 3.实例属性
+    // 3.1 String.prototype.length: 返回字符串长度
+    log('abc'.length); // 3
+
+    // 4.实例方法
+    // 4.1 String.prototype.charAt(): 返回指定位置的字符, 没有则返回空字符串, 编号从0开始.
+    var s3 = new String('abc');
+    log(s3.charAt(1)); // "b"
+    log(s3.charAt(3)); // ""
+    log(s3.charAt(-1)); // ""
+
+    // 4.2 String.prototype.charCodeAt(): 返回指定位置的 Unicode 码点 (十进制).
+    log('abc'.charCodeAt(1)); // 98
+    log('abc'.charCodeAt(3)); // NaN
+    log('abc'.charCodeAt(-1)); // NaN
+
+    // 4.3 String.prototype.concat(): 入参为一个或多个字符串, 拼接字符串并返回 (不改变原字符串).
+    var s4 = 'abc';
+    var s5 = '123';
+    log(s4.concat(s5)); // "abc123"
+    log(s4, s5); // "abc" "123"
+    log(s4.concat('123', '456')); // "abc123456"
+
+    // 4.4 String.prototype.slice(start, end): 从原字符串取出子字符串并返回 (不改变原字符串).
+    log('abcdef'.slice(0, 4)); // "abcd"
+    log('abcdef'.slice(4)); // "ef"
+    log('abcdef'.slice(-2)); // "ef"
+    log('abcdef'.slice(-2, -1)); // "e"
+    log('abcdef'.slice(2, 1)); // ""
+
+    // 4.5 String.prototype.substring(start, end): 与slice类似, 某些情况违法直觉, 建议使用slice() (不改变原字符串).
+    log('abcdef'.substring(0, 4)); // "abcd"
+
+    // 4.6 String.prototype.substr(from, length): 与slice()类似, 区别在于第二个参数为子串长度 (不改变原字符串).
+    log('abcdef'.substr(2, 3)); // "cde"
+
+    // 4.7 String.prototype.indexOf(searchString, position)/lastIndexOf(): 返回参数字符串在原字符串第一次出现的位置, 为匹配开始的位置, 没匹配则返回-1.
+    log('abcdef'.indexOf('de')); // 3
+    log('abcdef'.lastIndexOf('de')); // 3
+    // 传入第二个参数时, 表示从改位置开始向后匹配
+    log('abcdef'.indexOf('de', 4)); // -1
+
+    // 4.8 String.prototype.trim(): 返回去除字符串两端的空格后的字符串 (不改变原字符串).
+    log('  abc   '.trim() === 'abc') // true
+    log('\r\tabc\n'.trim() === 'abc') // true
+
+    // 4.9 tring.prototype.toLowerCase()/toUpperCase(): 转换为小写或大写字符串 (不改变原字符串).
+    log('Hello World'.toLowerCase()); // hello world
+    log('Hello World'.toUpperCase()); // HELLO WORLD
+
+    // 4.10 String.prototype.match(): 确定原字符串是否匹配某个子字符串, 返回数组.
+    log('cat, bat, sat, fat'.match('at')); // ["at"]
+    log('cat, bat, sat, fat'.match('xt')); // null
+    var matches = 'cat, bat, sat, fat'.match('at');
+    log(matches.index); // 1
+    log(matches.input); // "cat, bat, sat, fat"
+
+    // 4.11 String.prototype.search()/replace(): 返回匹配第一个位置没有则返回-1/返回替换后的字符串 (一般只替换第一个)
+    log('cat, bat, sat, fat'.search('at')); // 1
+    log('aaa'.replace('a', 'b')) // "baa"
+
+    // 4.12 String.prototype.split(): 按指定分隔符分割字符串, 接受第二个参数表示返回数组的最大成员数.
+    log('a|b|c'.split('|')); // ['a', 'b', 'c']
+    log('a|b|c'.split('|', 2)); // ['a', 'b']
+
+    // 4.13 String.prototype.localeCompare(): 返回两个字符串比较的结果.
+    log('abc'.localeCompare('aaa')); // 1
+    log('abc'.localeCompare('bbb')); // -1
+    log('abc'.localeCompare('abc')); // 0
+</script>
+</body>
+</html>
