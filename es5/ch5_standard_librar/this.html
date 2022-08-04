@@ -7,6 +7,141 @@
 <body>
 <script>
     var log = console.log.bind(console);
+
+    // 1.概念
+    // this 关键字, 用在构造函数中表示实例对象, 一般表示属性或方法所在的对象.
+    // 示例一
+    var p1 = {
+        name: '张三',
+        describe: function () {
+            return '姓名: ' + this.name;
+        }
+    };
+    log(p1.describe()) // 姓名: 张三
+
+    // 示例二
+    var p2 = {
+        name: '张三',
+        describe: function () {
+            return '姓名: ' + this.name;
+        }
+    };
+    var p3 = {
+        name: '李四'
+    };
+    p3.describe = p2.describe;
+    log(p2.describe()); // 姓名: 张三
+    log(p3.describe()); // 姓名: 李四
+
+    // 示例三
+    function f1() {
+        return '姓名: ' + this.name;
+    }
+    var p4 = {
+        name: '张三',
+        describe:  f1
+    };
+    var p5 = {
+        name: '李四',
+        describe:  f1
+    };
+    log(p4.describe()); // 姓名: 张三
+    log(p5.describe()); // 姓名: 李四
+
+    // 2.实质
+    // js对象的属性可以是基础类型, 也可以函数类型, 函数可以在不同的上下文环境执行, 为了在函数内部引用上下文环境的变量, 即引入了this关键字.
+
+    // 3.使用场合
+    // 3.1 全局对象: this指向顶层对象window
+    log(this === window); // true
+    function f2() {
+        log(this === window);
+    }
+    f2(); // true
+
+    // 3.2 构造函数: this指向实例对象
+    var Obj = function (p) {
+        this.p = p;
+    };
+    var o1 = new Obj('tom');
+    log(o1.p); // tom
+
+    // 3.3 对象的方法: this指向方法运行时所在的对象 (方法赋值给另一个对象, 会改变this的指向)
+    var o2 = {
+        name: 'tom',
+        foo: function () {
+            log(this);
+        }
+    };
+    o2.foo(); // {name: 'tom', foo: ƒ}
+
+    // 1) 下面情况回改变this的指向
+    // 情况一
+    // (o2.foo = o2.foo)() // window
+    // 等同于
+    // (o2.foo = function () {
+    //     log(this);
+    // })()
+
+    // 情况二
+    // (false || o2.foo)() // window
+
+    // 情况三
+    // (1, obj.foo)() // window
+
+    // 2) this所在方法不再对象第一层, 此时this指向前一层的对象.
+    var a = {
+        p: 'Hello',
+        b: {
+            m: function() {
+                log(this.p);
+            }
+        }
+    };
+    a.b.m() // undefined
+
+    // 4.使用注意点
+    // 1) 避免多层this
+    // 2) 避免在数组处理方法中使用this
+    // 3) 避免回调函数中使用this
+
+    // 5.绑定this
+    // 5.1 Function.prototype.call()
+    // func.call(thisValue): 参数为空或为null,undefined时,默认为全局对象.
+    var obj2 = {};
+    var f1 = function () {
+        return this;
+    };
+    log(f1() === window); // true
+    log(f1.call(obj2) === obj2); // true
+
+    // 多参数
+    // func.call(thisValue, arg1, arg2, ...)
+    function add(a, b) {
+        return a + b;
+    }
+    log(add.call(this, 1, 2)); // 3
+
+    // 5.2 Function.prototype.apply()
+    // func.apply(thisValue, [arg1, arg2, ...]): 第一个参数是this要指向的对象, 为null,undefined则指向全局对象.
+    function f2(x, y) {
+        log(x + y);
+    }
+    f2.call(null, 1, 1); // 2
+    f2.apply(null, [1, 1]); // 2
+
+    // 找出数组最大元素
+    var arr1 = [4, 3, 5, 1, 2];
+    log(Math.max.apply(null, arr1)); // 5
+
+    // 5.3 Function.prototype.bind()
+    // 将函数内的this绑定到某个对象, 然后返回一个新函数.
+    var d = new Date();
+    log(d.getTime()); // 1659626653926
+    // var printTime = d.getTime;
+    // printTime(); // Uncaught TypeError: this is not a Date object
+    var printTime = d.getTime.bind(d);
+    printTime();
 </script>
 </body>
 </html>
