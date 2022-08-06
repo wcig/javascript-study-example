@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>对象继承</title>
+</head>
+<body>
+<script>
+    var log = console.log.bind(console);
+
+    // 1.原型对象概述
+    // 1.1 构造函数缺点: 同一个构造函数无法共享属性
+    function Cat(name, color) {
+        this.name = name;
+        this.color = color;
+        this.meow = function () {
+            log('..');
+        };
+    }
+    var cat1 = new Cat('A', 'white');
+    var cat2 = new Cat('B', 'black');
+    log(cat1.name, cat1.color); // A white
+    log(cat2.name, cat2.color); // B black
+    log(cat1.meow === cat2.meow); // false
+
+    // 1.2 prototype属性作用: 原型对象的所有属性和方法, 可以被实例对象共享.
+    // 1) 每一个函数都有一个prototype属性, 其指向一个对象.
+    function f() {}
+    log(typeof f.prototype); // object
+
+    // 2) 通过prototype共享color属性
+    function Animal(name) {
+        this.name = name;
+    }
+    Animal.prototype.color = 'white';
+    var cat3 = new Animal('C');
+    var cat4 = new Animal('D');
+    log(cat3.color, cat4.color); // white white
+
+    // 3) 原型对象修改, 所有实例对象也会生效.
+    Animal.prototype.color = 'black';
+    log(cat3.color, cat4.color); // black black
+
+    // 4) 实例对象有同样的属性, 会覆盖原型对象的属性.
+    cat3.color = 'yellow';
+    log(cat3.color, cat4.color); // yellow black
+
+    // 5) 共享原型对象的方法属性
+    Animal.prototype.walk = function () {
+        log(this.name + ' is walking');
+    }
+    cat3.walk(); // C is walking
+    cat4.walk(); // D is walking
+
+    // 1.3 原型链: 所有对象都有自己的原型对象(prototype), 任何一个对象都可以作为其他对象的原型, 又原型对象也是对象也有自己的原型, 最后形成了一个原型链(prototype chain).
+    // 所有对象的原型都可以上溯到Object.prototype, 而Object.prototype的原型是null.
+    log(Object.getPrototypeOf(Object.prototype)); // null
+
+    // 1.4 constructor属性
+    // 1) prototype对象的constructor属性默认指向prototype对象所在的构造函数
+    function P1() {}
+    log(P1.prototype.constructor === P1); // true
+
+    // 2) 定义在prototype对象的constructor属性, 可以被其所有实例对象继承.
+    function P2() {}
+    var pp2 = new P2();
+    log(pp2.constructor === P2); // true
+    log(pp2.constructor === P2.prototype.constructor); // true
+    log(pp2.hasOwnProperty('constructor')); // false (实例对象自身没有constructor属性,读取原型链上P2的constructor属性)
+
+    // 3) 通过constructor属性可以判断实例对象, 是由哪个构造函数生成.
+    function P3() {}
+    var pp3 = new P3();
+    log(pp3.constructor === P3); // true
+    log(pp3.constructor === RegExp); // false
+
+    // 4) 有了constructor属性, 可以从一个实例对象创建另一个实例对象.
+    function P4() {}
+    var pp41 = new P4();
+    var pp42 = new pp41.constructor();
+    log(pp42.constructor === P4); // true
+    log(pp42 instanceof P4); // true
+
+    // 5) 修改了原型对象, 一般需要同时修改constructor属性, 防止引用时出错.
+    function P5() {}
+    log(P5.prototype.constructor === P5);
+    P5.prototype = {
+        method: function() {}
+    };
+    log(P5.prototype.constructor === P5); // true
+    log(P5.prototype.constructor === Object); // true
+
+    // 正确写法一
+    // C.prototype = {
+    //     constructor: C,
+    //     method1: function (...) { ... },
+    //     // ...
+    // };
+    // 正确写法二
+    // C.prototype.method1 = function (...) { ... };
+
+    // 2.instanceof运算符
+    // 1) instanceof运算符返回一个布尔值, 表示对象是否为某个构造函数的实例. 运算符左侧是实例对象, 右侧是构造函数. 会检查右侧的构造函数的原型对象(prototype)是否在左侧实例对象的原型链上.
+    function P6() {}
+    var pp6 = new P6();
+    log(pp6 instanceof P6); // true
+    // 等同于
+    log(P6.prototype.isPrototypeOf(pp6)); // true
+
+    // 2) 由于instanceof是检查整个原型链, 因此同一个实例对象可能对多个构造函数都返回true.
+    var d1 = new Date();
+    log(d1 instanceof Date); // true
+    log(d1 instanceof Object); // true
+
+    // 3) 任意非null对象都是Object的实例, 通过instanceof运算符可以判断一个值是否为非null对象.
+    var d2 = new Date();
+    log(d2 instanceof Object); // true
+    log(null instanceof Object); // false
+
+    var obj = Object.create(null);
+    log(typeof obj); // object
+    log(obj instanceof Object); // false
+
+    // 4) instanceof运算符可以用于对象值类型判断, 对于undefined和null总是返回false
+    var x = [1, 2, 3];
+    var y = {};
+    log(x instanceof Array); // true
+    log(y instanceof Object); // true
+    log(undefined instanceof Object); // false
+    log(null instanceof Object); // false
+
+    // 5) 利用instanceof解决调用构造函数时, 忘加new关键字的问题.
+    function FooBar(foo, bar) {
+        if (this instanceof FooBar) {
+            this._foo = foo;
+            this._bar = bar;
+        } else {
+            return new FooBar(foo, bar);
+        }
+    }
+
+    // 3.构造函数的继承
+    // 1) 写法一:
+    // function Sub(value) {
+    //     Super.call(this);
+    //     this.prop = value;
+    // }
+    // Sub.prototype = Object.create(Super.prototype);
+    // Sub.prototype.constructor = Sub;
+    // Sub.prototype.method = '...';
+
+    // 2) 写法二 (不建议, 子类会具有父类实例的方法)
+    // Sub.prototype = new Super();
+
+    // 3) 示例
+    function Shape() {
+        this.x = 0;
+        this.y = 0;
+    }
+    Shape.prototype.move = function (x, y) {
+        this.x += x;
+        this.y += y;
+        console.info('Shape moved.');
+    };
+    // 第一步: 子类继承父类的实例
+    function Rectangle() {
+        Shape.call(this);
+    }
+    // 另一种写法
+    // function Rectangle() {
+    //     this.base = Shape;
+    //     this.base();
+    // }
+    // 第二步: 子类继承父类的原型
+    Rectangle.prototype = Object.create(Shape.prototype);
+    Rectangle.prototype.constructor = Rectangle;
+    // 第三步: 创建实例
+    var rect = new Rectangle();
+    log(rect instanceof Rectangle); // true
+    log(rect instanceof Shape); // true
+
+    // 4) 单个方法的继承
+    // ClassB.prototype.print = function() {
+    //     ClassA.prototype.print.call(this);
+    //     // some code
+    // }
+
+    // 4.多重继承
+    // js不支持多重继承, 但可以通过方法实现.
+    function M1() {
+        this.hello = 'hello';
+    }
+    function M2() {
+        this.world = 'world';
+    }
+    function S() {
+        M1.call(this);
+        M2.call(this);
+    }
+    // 继承 M1
+    S.prototype = Object.create(M1.prototype);
+    // 继承链上加入 M2
+    Object.assign(S.prototype, M2.prototype);
+    // 指定构造函数
+    S.prototype.constructor = S;
+    var s = new S();
+    s.hello // 'hello'
+    s.world // 'world'
+
+    // 5.模块
+    // 5.1 基本实现方法: 模块写成对象, 所有模块成员都放到对象中. (缺点: 模块所有成员都对外暴露了)
+    var module1 = new Object({
+        _count : 0,
+        m1 : function (){
+            //...
+        },
+        m2 : function (){
+            //...
+        }
+    });
+    module1.m1();
+    module1._count = 1;
+
+    // 5.2 封装私有变量: 构造函数的写法. (缺点: 构造函数与实例对象是一体的, 耗费内存)
+    function StringBuilder() {
+        var buffer = [];
+        this.add = function (str) {
+            buffer.push(str);
+        };
+        this.toString = function () {
+            return buffer.join('');
+        };
+    }
+
+    // 5.3 封装私有变量: 立即执行函数的写法
+    var module3 = (function () {
+        var _count = 0;
+        var m1 = function () {
+            //...
+        };
+        var m2 = function () {
+            //...
+        };
+        return {
+            m1 : m1,
+            m2 : m2
+        };
+    })();
+    module3.m1();
+    log(module3._count); // undefined
+
+    // 5.4 模块的放大模式: 如果一个模块很大必须分成几个部分, 或一个模块需要继承另一个模块, 此时可以使用放大模式.
+    // var module4 = (function (mod){
+    //     mod.m3 = function () {
+    //         //...
+    //     };
+    //     return mod;
+    // })(module4);
+
+    // 宽放大模式
+    var module5 = (function (mod) {
+        //...
+        return mod;
+    })(window.module5 || {});
+
+    // 5.5 输入全局变量
+    // finalCarousel对象输出到全局, 对外暴露init和destroy接口, 内部方法go, handleEvents, initialize, dieCarouselDie都是外部无法调用.
+    (function($, window, document) {
+        function go(num) {
+        }
+        function handleEvents() {
+        }
+        function initialize() {
+        }
+        function dieCarouselDie() {
+        }
+        //attach to the global scope
+        window.finalCarousel = {
+            init : initialize,
+            destroy : dieCarouselDie
+        }
+    })(window, document);
+</script>
+</body>
+</html>
