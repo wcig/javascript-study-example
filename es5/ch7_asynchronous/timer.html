@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>异步操作-定时器</title>
+</head>
+<body>
+<script>
+    var log = console.log.bind(console);
+
+    // 1.setTimeout(): 指定函数或代码段在多少毫秒之后执行,返回值为定时器的编号.
+    // setTimeout(handler: TimerHandler, timeout?: number, ...argyments: any[])
+    // 1) 基本使用
+    var timerId1 = setTimeout('', 0);
+    log(1);
+    setTimeout(function () {
+        log(2);
+    }, 100);
+    log(3);
+    // 1
+    // 3
+    // 2
+
+    // 2) 可以在延迟时间后添加多个参数, 该参数位执行函数的参数.
+    setTimeout(function (a, b) {
+        log(a + b); // 30
+    }, 100, 10, 20);
+
+    // 执行函数为对象的方法时, 直接传对象的方法, 方法内部this指向全局对象.
+    var x = 1;
+    var obj1 = {
+        x: 2,
+        y: function () {
+            log('obj1 x:', this.x)
+        }
+    };
+    setTimeout(obj1.y, 100); // obj1 x: 1
+
+    // 正确做法
+    var obj2 = {
+        x: 2,
+        y: function () {
+            log('obj2 x:', this.x)
+        }
+    };
+    setTimeout(function () {
+        obj2.y(); // obj2 x: 2
+    }, 100);
+    // 或者
+    setTimeout(obj2.y.bind(obj2), 100); // obj2 x: 2
+
+    // 2.setInterval(): 用法与setTimeout()类似, 区别在于是每隔指定时间执行一次.
+    var timerId2 = setInterval(function () {
+        log('interval-1');
+    }, 1000);
+
+    // 3.clearTimeout(), clearInterval(): 取消对应的定时器, 参数为定时器编号.
+    clearTimeout(timerId1);
+    clearInterval(timerId2);
+
+    // 取消当前所有setTimeout定时器
+    // (function() {
+    //     // 每轮事件循环检查一次
+    //     var gid = setInterval(clearAllTimeouts, 0);
+    //
+    //     function clearAllTimeouts() {
+    //         var id = setTimeout(function() {}, 0);
+    //         while (id > 0) {
+    //             if (id !== gid) {
+    //                 clearTimeout(id);
+    //             }
+    //             id--;
+    //         }
+    //     }
+    // })();
+
+    // 4.示例: debounce函数 (当两次Ajax通信小于2500毫秒则取消上一次的定时器)
+    // old:
+    // $('textarea').on('keydown', ajaxAction);
+    // new:
+    // $('textarea').on('keydown', debounce(ajaxAction, 2500));
+    // function debounce(fn, delay){
+    //     var timer = null; // 声明计时器
+    //     return function() {
+    //         var context = this;
+    //         var args = arguments;
+    //         clearTimeout(timer);
+    //         timer = setTimeout(function () {
+    //             fn.apply(context, args);
+    //         }, delay);
+    //     };
+    // }
+
+    // 5.运行机制: setTimeout和setInterval的运行机制，是将指定的代码移出本轮事件循环, 等到下一轮事件循环再检查是否到了指定时间. 如果到了就执行对应的代码; 如果不到就继续等待.
+    // 1) 当定时器后跟一个长耗时任务, 那么将等长耗时任务执行完, 才执行定时器函数.
+    setInterval(function () {
+        console.log('abc123');
+    }, 1000);
+    sleep(1000);
+    function sleep(ms) {
+        console.log('long task');
+        var start = Date.now();
+        while ((Date.now() - start) < ms) {
+        }
+    }
+    // long task
+    // abc12
+
+    // 6.setTimeout(f, 0): 不是立刻执行, 将在下一轮事件循环开始执行.
+    setTimeout(function () {
+        log('aaa');
+    }, 0);
+    log('bbb');
+    // bbb
+    // aaa
+</script>
+</body>
+</html>
