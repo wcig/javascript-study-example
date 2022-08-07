@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>异步操作-Promise对象</title>
+</head>
+<body>
+<script>
+    var log = console.log.bind(console);
+
+    // 1.概述
+    // Promise 对象是 JS 异步操作解决方案, 为异步操作提供统一接口.
+    // 1) 传统写法
+    // step1(function (value1) {
+    //     step2(value1, function(value2) {
+    //         step3(value2, function(value3) {
+    //             step4(value3, function(value4) {
+    //                 // ...
+    //             });
+    //         });
+    //     });
+    // });
+
+    // 2) Promise 写法
+    // (new Promise(step1))
+    //     .then(step2)
+    //     .then(step3)
+    //     .then(step4);
+
+    // 2.Promise 对象的状态
+    // 2.1 Promise 的三种状态
+    // 1) pending: 异步操作未完成
+    // 2) fulfilled: 异步操作成功
+    // 3) rejected: 异步操作失败
+
+    // 2.2 三种状态变化途径
+    // 1) pending -> fulfilled
+    // 2) pending -> rejected
+
+    // 2.3 状态变化发生后就不会有新的状态变化, 所以 Promise 对象最终只有两种结果
+    // 1) 异步操作成功: Promise 实例返回一个值, 状态变为 fulfilled;
+    // 2) 异步操作失败: Promise 实例返回一个错误, 状态变为 rejected.
+
+    // 3. Promise 构造函数
+    // 3.1 JS 提供原生的 Promise 构造函数生成 Promise 实例
+    // var promise = new Promise(function (resolve, reject) {
+    //     // ...
+    //     if (/* 异步操作成功 */){
+    //         resolve(value);
+    //     } else { /* 异步操作失败 */
+    //         reject(new Error());
+    //     }
+    // });
+    // 1) resolve, reject 两个参数为函数, 由 JS 引擎提供不需要自己实现;
+    // 2) resolve 函数作用: 异步操作成功时调用, 并将异步操作结果作为参数传递数去;
+    // 3) reject 函数作用: 异步操作失败时调用, 将异步操作出现错误作为参数传递出去.
+
+    // 3.2 示例
+    function timeout(ms) {
+        return new Promise((resolve, reject) => {
+            setTimeout(resolve, ms, 'done');
+        })
+    }
+    timeout(100);
+
+    // 4.Promise.prototype.then()
+    // then 方法接受两个回调函数, 第一个为异步操作成功时调用, 第二个为失败时调用.
+    var p1 = new Promise(function (resolve, reject) {
+        resolve('成功');
+    });
+    p1.then(console.log, console.error);
+
+    var p2 = new Promise(function (resolve, reject) {
+        reject(new Error('失败'));
+    });
+    p2.then(console.log, console.error);
+
+    // 5.then 用法
+    // 5.1 写法
+    // // 写法一
+    // f1().then(function () {
+    //     return f2();
+    // });
+    // // 写法二
+    // f1().then(function () {
+    //     f2();
+    // });
+    // // 写法三
+    // f1().then(f2());
+    // // 写法四
+    // f1().then(f2);
+
+    // 5.2 区别
+    // // 写法一: f3回调函数的参数为f2函数的运行结果
+    // f1().then(function () {
+    //     return f2();
+    // }).then(f3);
+    // // 写法二: f3的参数为undefined
+    // f1().then(function () {
+    //     f2();
+    //     return;
+    // }).then(f3);
+    // // 写法三: f3的参数为f2的运行结果
+    // f1().then(f2()).then(f3);
+    // // 写法四: f3的参数为f1的运行结果
+    // f1().then(f2).then(f3);
+
+    // 6.示例: 图片加载
+    var preloadImage = function (path) {
+        return new Promise(function (resolve, reject) {
+            var image = new Image();
+            image.onload  = resolve;
+            image.onerror = reject;
+            image.src = path;
+        });
+    };
+    preloadImage('https://avatars.githubusercontent.com/u/50048857?v=4')
+        .then(function (e) { document.body.append(e.target) })
+        .then(function () { console.log('加载成功') })
+
+    // 7.微任务: Promise 回调函数不是正常的异步任务而是微任务, 正常任务追加到下一轮事件循环, 微任务追加到本轮事件循环, 所以微任务的执行时间一定早于正常任务.
+    setTimeout(function() {
+        console.log(1);
+    }, 0);
+    new Promise(function (resolve, reject) {
+        resolve(2);
+    }).then(console.log);
+    console.log(3);
+    // 3
+    // 2
+    // 1
+</script>
+</body>
+</html>
