@@ -116,9 +116,9 @@ var log = console.log.bind(console);
     // 1) 方式一: <type>
     var a1 = 'tom';
     var s = a1;
-    log(s);
+    log(s); // tom
     // 2) 方式二: as
     var a2 = 123;
     var n = a2;
-    log(n);
+    log(n); // 123
 }
