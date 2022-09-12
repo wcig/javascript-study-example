@@ -2,7 +2,7 @@ const log = console.log.bind(console);
 
 // ch3: 接口
 
-// 1.属性接口
+// 1.属性接口: 直接赋值时, 多一些或少一些属性都是不允许的
 {
     // 1) 定义
     interface LabelledValue {
