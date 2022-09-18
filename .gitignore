@@ -2,3 +2,6 @@
 *.iml
 .vscode
 .idea
+
+# project
+node_modules
