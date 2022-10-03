@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>模板语法(template syntax)</title>
+    <script src="../cdn/vue.global.js"></script>
+</head>
+<body>
+<div id="app">
+    <!-- 文本插值 -->
+    <span>Message: {{ msg }}</span>
+
+    <!-- 原始 HTML -->
+    <p>Using text interpolation: {{ rawHtml }}</p>
+    <p>Using v-html directive: <span v-html="rawHtml"></span></p>
+
+    <!-- Attribute 绑定 -->
+    <div v-bind:id="dynamicId"></div>
+
+    <!-- 布尔型 Attribute -->
+    <button v-bind:disabled="isButtonDisabled">Button</button>
+
+    <!-- 动态绑定多个值 -->
+    <div v-bind="objectOfAttrs"></div>
+
+    <!-- 使用 JavaScript 表达式 -->
+    <div>{{ number + 1}}</div>
+    <div>{{ok ? 'YES' : 'NO'}}</div>
+    <div>{{content.split('').reverse().join('')}}</div>
+    <div :id="`list-${id}`"></div>
+
+    <!-- 指令 Directives -->
+    <p v-if="seen">Now you see me</p>
+
+    <!-- 参数 Arguments -->
+    <a v-bind:href="url">link</a>
+    <br>
+    <a v-on:click="doSomething">click</a>
+    <br>
+
+    <!-- 动态参数 -->
+    <a v-bind:[attributeName]="url"> ... </a>
+    <a v-on:[eventName]="doSomething"> ... </a>
+</div>
+<script>
+    const { createApp } = Vue
+
+    let app = createApp({
+        data() {
+            return {
+                msg: 'span msg',
+                rawHtml: '<span style="color: red">This should be red.</span>',
+                dynamicId: 'dynamicId001',
+                isButtonDisabled: true,
+                objectOfAttrs: {
+                    id: 'container',
+                    class: 'wrapper'
+                },
+                number: 123,
+                ok: true,
+                content: 'abc123',
+                id: 111,
+                seen: true,
+                url: "https://baidu.com",
+                doSomething: function () {
+                    alert('ok')
+                },
+            }
+        }
+    }).mount('#app')
+</script>
+</body>
+</html>
